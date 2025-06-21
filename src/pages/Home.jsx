@@ -1,3 +1,5 @@
+import XRPDisplay from '../components/XRPDisplay';
+
 function Home() {
   return (
     <div className="container mx-auto p-4">
@@ -8,6 +10,7 @@ function Home() {
           Get Started
         </button>
       </div>
+      <XRPDisplay />
     </div>
   );
 }
