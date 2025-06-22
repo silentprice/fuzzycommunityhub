@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import UserProfile from '../components/UserProfile';
 import './Profile.css';
 
 function Profile() {
@@ -19,8 +20,7 @@ function Profile() {
       </div>
       <div className="xrp-stats">
         <h3>My XRP Activity</h3>
-        <p>FUZZY/XRP Pool: 63 XRP</p>
-        <p>NFTs: Fuzzybear #64</p>
+        <UserProfile account={account} />
       </div>
     </div>
   );

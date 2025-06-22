@@ -1,38 +1,35 @@
+// src/components/SearchBar.jsx
 import { useState } from 'react';
 import Fuse from 'fuse.js';
 
-function SearchBar() {
+function SearchBar({ posts, setFilteredPosts }) {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
 
-  const data = [
-    { title: 'XRP News' },
-    { title: 'Community Update' },
-    { title: 'XRP Ledger Guide' },
-  ];
-
-  const fuse = new Fuse(data, { keys: ['title'] });
+  const fuse = new Fuse(posts, {
+    keys: ['content', 'user.username'], // Search post content and username
+    threshold: 0.3, // Fuzziness (0 = exact, 1 = loose)
+  });
 
   const handleSearch = (e) => {
-    setQuery(e.target.value);
-    const searchResults = fuse.search(e.target.value);
-    setResults(searchResults.map((result) => result.item));
+    const value = e.target.value;
+    setQuery(value);
+    if (value.trim() === '') {
+      setFilteredPosts(posts); // Show all posts if query is empty
+    } else {
+      const results = fuse.search(value).map((result) => result.item);
+      setFilteredPosts(results);
+    }
   };
 
   return (
-    <div className="p-4">
+    <div className="search-bar">
       <input
         type="text"
         value={query}
         onChange={handleSearch}
-        placeholder="Search community content..."
-        className="w-full p-2 border rounded"
+        placeholder="Search Fuzzy posts..."
+        className="search-input"
       />
-      <ul>
-        {results.map((item, index) => (
-          <li key={index} className="p-2">{item.title}</li>
-        ))}
-      </ul>
     </div>
   );
 }

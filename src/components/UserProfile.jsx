@@ -1,24 +1,27 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { Client } from 'xrpl';
-import fuzzyAvatar from '../assets/fuzzy5.png'; // Reuse fuzzy5.png
+import fuzzyAvatar from '../assets/fuzzy5.png';
 import './UserProfile.css';
 
-function UserProfile() {
+function UserProfile({ account }) {
   const { wallet } = useParams(); // Get wallet from URL
   const [accountInfo, setAccountInfo] = useState(null);
   const [nfts, setNfts] = useState([]);
   const [error, setError] = useState(null);
-  const [userPosts, setUserPosts] = useState([]); // Placeholder for posts
+  const [userPosts, setUserPosts] = useState([]);
 
-  // Placeholder user data; replace with auth/backend
+  // Use account prop if no wallet param (for Profile.jsx)
+  const targetWallet = wallet || account;
+
+  // Placeholder user data
   // const currentUser = useAuth().user || { username: 'Guest', wallet: '' };
-  const currentUser = { username: 'CurrentUser', wallet: 'rXRP...9999' };
-  const isOwnProfile = wallet === currentUser.wallet;
+  const currentUser = { username: 'CurrentUser', wallet: account || 'rXRP...9999' };
+  const isOwnProfile = targetWallet === currentUser.wallet;
 
   useEffect(() => {
     async function fetchUserData() {
-      if (!wallet) {
+      if (!targetWallet) {
         setError('No wallet address provided.');
         return;
       }
@@ -28,13 +31,13 @@ function UserProfile() {
 
         const accountResponse = await client.request({
           command: 'account_info',
-          account: wallet,
+          account: targetWallet,
         });
         setAccountInfo(accountResponse.result);
 
         const nftsResponse = await client.request({
           command: 'account_nfts',
-          account: wallet,
+          account: targetWallet,
         });
         setNfts(nftsResponse.result.account_nfts);
 
@@ -46,7 +49,7 @@ function UserProfile() {
     }
     fetchUserData();
 
-    // Simulate fetching user posts (replace with backend API)
+    // Simulate fetching user posts
     setUserPosts([
       {
         id: 1,
@@ -55,7 +58,7 @@ function UserProfile() {
         comments: [{ id: 1, user: 'OtherUser', content: 'Welcome!' }],
       },
     ]);
-  }, [wallet]);
+  }, [targetWallet]);
 
   if (error) {
     return (
@@ -74,10 +77,10 @@ function UserProfile() {
         </div>
         {accountInfo ? (
           <div className="profile-details">
-            <p><strong>Username:</strong> {currentUser.username}</p> {/* Replace with backend */}
-            <p><strong>Wallet:</strong> {wallet}</p>
+            <p><strong>Username:</strong> {currentUser.username}</p>
+            <p><strong>Wallet:</strong> {targetWallet}</p>
             <p><strong>Balance:</strong> {(accountInfo.account_data.Balance / 1000000).toFixed(2)} XRP</p>
-            <p><strong>Bio:</strong> XRP Fuzzy enthusiast! {/* Placeholder */}</p>
+            <p><strong>Bio:</strong> XRP Fuzzy enthusiast!</p>
             {isOwnProfile && (
               <button className="edit-button">Edit Profile</button>
             )}
@@ -88,7 +91,6 @@ function UserProfile() {
                   {nfts.map((nft) => (
                     <li key={nft.NFTokenID} className="nft-item">
                       <p><strong>ID:</strong> {nft.NFTokenID}</p>
-                      {/* Add metadata/image when available */}
                     </li>
                   ))}
                 </ul>

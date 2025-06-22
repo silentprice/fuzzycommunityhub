@@ -59,6 +59,14 @@
   gap: 10px;
 }
 
+.nfts-section h3,
+.posts-section h3 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1e40af; 
+  margin-bottom: 1rem;
+}
+
 .nft-item,
 .post-item {
   background-color: rgba(255, 255, 255, 0.03);
@@ -74,4 +82,10 @@
 .error {
   color: #ff4d4d;
   text-align: center;
+}
+  @media (max-width: 768px) {
+  .user-profile-container {
+    padding: 15px;
+    margin: 15px auto;
+  }
 }
