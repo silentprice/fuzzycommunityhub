@@ -1,0 +1,24 @@
+.profile-container {
+  background-color: rgb(77, 46, 6);
+  color: rgba(255, 255, 255, 0.87);
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.user-info,
+.xrp-stats {
+  margin-bottom: 20px;
+}
+
+.edit-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.87);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
