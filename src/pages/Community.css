@@ -1,0 +1,103 @@
+.community-container {
+  background-color: rgb(77, 46, 6);
+  color: rgba(255, 255, 255, 0.87);
+  padding: 20px;
+  max-width: 800px;
+  margin: 20px auto;
+}
+
+.post-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.post-input {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.87);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 10px;
+  border-radius: 4px;
+  resize: vertical;
+  min-height: 60px;
+}
+
+.post-button,
+.comment-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.87);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.post-button:hover,
+.comment-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.post-card {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  border-radius: 4px;
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.user-link {
+  color: rgba(255, 255, 255, 0.87);
+  text-decoration: none;
+}
+
+.user-link:hover {
+  text-decoration: underline;
+}
+
+.post-time,
+.comment-time {
+  font-size: 0.8em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.post-content {
+  margin-bottom: 10px;
+}
+
+.comments-section {
+  padding-left: 20px;
+}
+
+.comment {
+  margin-bottom: 10px;
+  font-size: 0.9em;
+}
+
+.comment-user {
+  font-weight: bold;
+}
+
+.comment-form {
+  display: flex;
+  gap: 10px;
+}
+
+.comment-input {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.87);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px;
+  border-radius: 4px;
+  flex-grow: 1;
+}
