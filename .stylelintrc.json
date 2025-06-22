@@ -7,8 +7,32 @@
     "at-rule-no-unknown": [
       true,
       {
-        "ignoreAtRules": ["tailwind", "apply", "variants", "responsive", "screen"]
+        "ignoreAtRules": [
+          "tailwind",
+          "apply",
+          "variants",
+          "responsive",
+          "screen",
+          "layer"
+        ]
       }
-    ]
+    ],
+    "property-no-unknown": [
+      true,
+      {
+        "ignoreProperties": ["font-synthesis", "-webkit-font-smoothing", "-moz-osx-font-smoothing"]
+      }
+    ],
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": ["where"]
+      }
+    ],
+    "selector-pseudo-element-no-unknown": true,
+    "no-descending-specificity": null,
+    "no-duplicate-selectors": true,
+    "no-empty-source": null,
+    "no-invalid-position-at-import-rule": null
   }
 }

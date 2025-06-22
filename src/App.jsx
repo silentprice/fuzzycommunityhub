@@ -11,11 +11,15 @@ import Navbar from './components/Navbar';
 function App() {
   return (
     <BrowserRouter>
+    <div className="min-h-screen bg-brown-100">
+      <Navbar />
+    
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/community" element={<Community />} />
       </Routes>
+      </div>
     </BrowserRouter>
   );
 }
