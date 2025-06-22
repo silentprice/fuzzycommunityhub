@@ -1,17 +1,35 @@
 import { NavLink } from 'react-router-dom';
+import fuzzy from '../assets/fuzzy5.png';
+import fuzzy1 from '../assets/fuzzy1.png';
+import fuzzy2 from '../assets/fuzzy2.png';
+import fuzzy3 from '../assets/fuzzy4.png';
 
 function Navbar() {
   return (
-    <nav className="bg-gray-800 p-8">
-      <div className="container mx-auto flex justify-between">
-        <h1 className="text-white text-2xl">XRP Fuzzy</h1>
-        <div className="space-x-10">
-          <NavLink to="/" className="text-white hover:text-gray-300">Home</NavLink>
-          <NavLink to="/about" className="text-white hover:text-gray-300">About</NavLink>
-          <NavLink to="/community" className="text-white hover:text-gray-300">Community</NavLink>
+    <nav>
+      <div className="container">
+        <img src={fuzzy1} className="fuzzy-image" alt="Fuzzy" />
+        <img src={fuzzy2} className="fuzzy-image" alt="Fuzzy" />
+        <h1>XRP Fuzzy</h1>
+        <img src={fuzzy3} className="fuzzy-image" alt="Fuzzy" />
+        <img src={fuzzy} className="fuzzy-image" alt="Fuzzy" />
+        <div className="nav-links">
+          <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>
+            Home
+          </NavLink>
+          <NavLink to="/about" className={({ isActive }) => (isActive ? 'active' : '')}>
+            About
+          </NavLink>
+          <NavLink to="/community" className={({ isActive }) => (isActive ? 'active' : '')}>
+            Community
+          </NavLink>
+          <NavLink to="/profile" className={({ isActive }) => (isActive ? 'active' : '')}>
+            Profile
+          </NavLink>
         </div>
       </div>
     </nav>
   );
 }
+
 export default Navbar;

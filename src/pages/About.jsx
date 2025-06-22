@@ -1,8 +1,10 @@
 function About() {
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-4xl font-bold">About XRP Fuzzy</h1>
-      <p>Learn about the lore and history of Fuzzy and XRP.</p>
+    <div className="container">
+      <div className="hero">
+        <h1>About XRP Fuzzy</h1>
+        <p>Discover the lore and history of Fuzzy and XRP. Our community is dedicated to fostering collaboration, sharing knowledge, and celebrating the potential of XRP in the blockchain world.</p>
+      </div>
     </div>
   );
 }

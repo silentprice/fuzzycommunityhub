@@ -1,8 +1,6 @@
-import { useState } from 'react'
-import './Footer.css'
-import xIcon from './assets/Icons/Facebook.png'
-import dexIcon from './assets/Icons/Pinterest.png'
-import cafeIcon from './assets/Icons/Instagram.png'
+import xIcon from '../assets/xlogo.png'
+import dexIcon from '../assets/dexlogo.jpg'
+import cafeIcon from '../assets/cafelogo.png'
 
 
 

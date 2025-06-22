@@ -1,4 +1,3 @@
-// src/components/UserProfile.jsx
 import { useState, useEffect } from 'react';
 import { Client } from 'xrpl';
 
@@ -17,14 +16,12 @@ function UserProfile({ account }) {
         const client = new Client('wss://s.altnet.rippletest.net:51233');
         await client.connect();
 
-        // Fetch account info
         const accountResponse = await client.request({
           command: 'account_info',
           account: account,
         });
         setAccountInfo(accountResponse.result);
 
-        // Fetch NFTs (optional, for XRPL NFT support)
         const nftsResponse = await client.request({
           command: 'account_nfts',
           account: account,
@@ -42,42 +39,41 @@ function UserProfile({ account }) {
 
   if (error) {
     return (
-      <div className="container mx-auto p-6">
-        <p className="text-red-600 text-lg">{error}</p>
+      <div className="container">
+        <p className="error">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="bg-white rounded-2xl shadow-lg p-8">
-        <h2 className="text-3xl font-bold text-indigo-800 mb-4">Your Profile</h2>
+    <div className="container">
+      <div className="profile-card">
+        <h2>Your Profile</h2>
         {accountInfo ? (
-          <div className="space-y-4">
-            <p className="text-lg text-gray-600">
-              <span className="font-semibold">Account:</span> {account}
+          <div>
+            <p>
+              <strong>Account:</strong> {account}
             </p>
-            <p className="text-lg text-gray-600">
-              <span className="font-semibold">Balance:</span>{' '}
-              {accountInfo.account_data.Balance / 1000000} XRP
+            <p>
+              <strong>Balance:</strong> {accountInfo.account_data.Balance / 1000000} XRP
             </p>
-            <h3 className="text-xl font-semibold text-indigo-800 mt-6">Your NFTs</h3>
+            <h3>Your NFTs</h3>
             {nfts.length > 0 ? (
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <ul>
                 {nfts.map((nft, index) => (
-                  <li key={index} className="bg-gray-100 p-4 rounded-lg">
-                    <p className="text-gray-600">
-                      <span className="font-semibold">NFT ID:</span> {nft.NFTokenID}
+                  <li key={index}>
+                    <p>
+                      <strong>NFT ID:</strong> {nft.NFTokenID}
                     </p>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-gray-600">No NFTs found in your account.</p>
+              <p>No NFTs found in your account.</p>
             )}
           </div>
         ) : (
-          <p className="text-gray-600">Loading profile...</p>
+          <p>Loading profile...</p>
         )}
       </div>
     </div>
