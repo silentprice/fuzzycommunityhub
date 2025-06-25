@@ -29,6 +29,9 @@ function Navbar() {
           <NavLink to="/profile" className={({ isActive }) => (isActive ? 'active' : '')}>
             Profile
           </NavLink>
+          <NavLink to="/leaderboard" className={({ isActive }) => (isActive ? 'active' : '')}>
+            Leaderboard
+          </NavLink>
         </div>
       </div>
     </nav>
