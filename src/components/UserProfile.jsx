@@ -1,21 +1,20 @@
+// src/components/UserProfile.jsx
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { Client } from 'xrpl';
 import fuzzyAvatar from '../assets/fuzzy5.png';
 import './UserProfile.css';
 
 function UserProfile({ account }) {
-  const { wallet } = useParams(); // Get wallet from URL
+  const { wallet } = useParams();
   const [accountInfo, setAccountInfo] = useState(null);
   const [nfts, setNfts] = useState([]);
   const [error, setError] = useState(null);
   const [userPosts, setUserPosts] = useState([]);
 
-  // Use account prop if no wallet param (for Profile.jsx)
-  const targetWallet = wallet || account;
-
   // Placeholder user data
   // const currentUser = useAuth().user || { username: 'Guest', wallet: '' };
+  const targetWallet = wallet || account;
   const currentUser = { username: 'CurrentUser', wallet: account || 'rXRP...9999' };
   const isOwnProfile = targetWallet === currentUser.wallet;
 
@@ -49,7 +48,6 @@ function UserProfile({ account }) {
     }
     fetchUserData();
 
-    // Simulate fetching user posts
     setUserPosts([
       {
         id: 1,
@@ -84,6 +82,7 @@ function UserProfile({ account }) {
             {isOwnProfile && (
               <button className="edit-button">Edit Profile</button>
             )}
+            <Link to="/nft-marketplace" className="marketplace-link">View NFT Marketplace</Link>
             <div className="nfts-section">
               <h3>NFTs</h3>
               {nfts.length > 0 ? (

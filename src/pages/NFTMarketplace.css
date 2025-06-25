@@ -1,0 +1,179 @@
+:root {
+  --brown: rgb(77, 46, 6);
+  --text-light: rgba(255, 255, 255, 0.87);
+  --primary: #1e40af;
+  --primary-hover: #1e3a8a;
+  --text-dark: #1f2937;
+  --white: #ffffff;
+  --error: #ff4d4d;
+  --link: #646cff;
+  --link-hover: #535bf2;
+}
+
+.nft-marketplace-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  color: var(--text-light);
+}
+
+.nft-gallery {
+  margin-bottom: 20px;
+}
+
+.nft-gallery h2 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.nft-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.nft-card {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.nft-image {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.post-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.post-input {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-light);
+  padding: 10px;
+  border-radius: 4px;
+  border: none;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.post-button,
+.comment-button {
+  background-color: var(--primary);
+  color: var(--text-light);
+  padding: 8px 16px;
+  border: none;
+  border-radius: 9999px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: fit-content;
+}
+
+.post-button:hover,
+.comment-button:hover {
+  background-color: var(--primary-hover);
+}
+
+.posts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.post-card {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-light);
+  padding: 15px;
+  border-radius: 4px;
+}
+
+.post-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.user-link {
+  color: var(--link);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.user-link:hover {
+  color: var(--link-hover);
+}
+
+.post-time,
+.comment-time {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.post-content {
+  margin-bottom: 10px;
+  font-size: 1rem;
+}
+
+.comments-section {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.comment {
+  margin-bottom: 10px;
+}
+
+.comment-user {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.comment-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.comment-input {
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-light);
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: none;
+  font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nft-marketplace-container {
+    padding: 15px;
+    margin: 15px auto;
+  }
+
+  .nft-list {
+    grid-template-columns: 1fr;
+  }
+
+  .post-form,
+  .comment-form {
+    flex-direction: column;
+  }
+
+  .comment-input {
+    width: 100%;
+  }
+}

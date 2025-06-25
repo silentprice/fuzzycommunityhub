@@ -23,6 +23,9 @@ function Navbar() {
           <NavLink to="/community" className={({ isActive }) => (isActive ? 'active' : '')}>
             Community
           </NavLink>
+          <NavLink to="/nft-marketplace" className={({ isActive }) => (isActive ? 'active' : '')}>
+            NFT Marketplace
+          </NavLink>
           <NavLink to="/profile" className={({ isActive }) => (isActive ? 'active' : '')}>
             Profile
           </NavLink>

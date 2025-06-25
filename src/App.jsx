@@ -4,6 +4,8 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Community from './pages/Community';
 import Profile from './pages/Profile';
+import UserProfile from './components/UserProfile';
+import NFTMarketplace from './pages/NFTMarketplace';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
@@ -20,6 +22,8 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/community" element={<Community />} />
             <Route path="/profile" element={<Profile account={account} />} />
+            <Route path="/profile/:wallet" element={<UserProfile account={account} />} />
+            <Route path="/nft-marketplace" element={<NFTMarketplace />} />
           </Routes>
         </main>
         <Footer />
@@ -27,4 +31,5 @@ function App() {
     </BrowserRouter>
   );
 }
+
 export default App;

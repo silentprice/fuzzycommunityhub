@@ -45,6 +45,23 @@
   background-color: rgba(255, 255, 255, 0.2);
 }
 
+.marketplace-link {
+  display: inline-block;
+  background-color: var(--primary);
+  color: var(--text-light);
+  padding: 8px 16px;
+  border-radius: 9999px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 10px;
+  transition: background-color 0.2s;
+}
+
+.marketplace-link:hover {
+  background-color: var(--primary-hover);
+}
+
 .nfts-section,
 .posts-section {
   margin-top: 20px;
