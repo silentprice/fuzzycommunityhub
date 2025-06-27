@@ -1,9 +1,20 @@
+:root {
+  --brown: rgb(77, 46, 6);
+  --text-light: rgba(255, 255, 255, 0.87);
+  --primary: #1e40af;
+  --primary-hover: #1e3a8a;
+  --text-dark: #1f2937;
+  --white: #ffffff;
+  --error: #ff4d4d;
+  --link: #646cff;
+  --link-hover: #535bf2;
+}
+
 .user-profile-container {
-  background-color: rgb(77, 46, 6);
-  color: rgba(255, 255, 255, 0.87);
-  padding: 20px;
   max-width: 800px;
   margin: 20px auto;
+  padding: 20px;
+  color: var(--text-light);
 }
 
 .profile-card {
@@ -20,29 +31,123 @@
 }
 
 .profile-avatar {
-  width: 50px;
-  height: auto;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
 }
 
-.profile-details {
+.profile-details p {
+  margin-bottom: 10px;
+}
+
+.edit-button, .cancel-button {
+  background-color: var(--primary);
+  color: var(--text-light);
+  padding: 8px 16px;
+  border: none;
+  border-radius: 9999px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-right: 10px;
+}
+
+.cancel-button {
+  background-color: #6b7280; /* Gray for cancel */
+}
+
+.edit-button:hover, .cancel-button:hover {
+  background-color: var(--primary-hover);
+}
+
+.cancel-button:hover {
+  background-color: #4b5563;
+}
+
+.bio-edit {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-top: 10px;
 }
 
-.edit-button {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.87);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: 8px 16px;
+.bio-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.bio-input {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-light);
+  padding: 10px;
   border-radius: 4px;
-  cursor: pointer;
-  width: fit-content;
+  border: none;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 80px;
 }
 
-.edit-button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
+.success {
+  color: #22c55e;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+.error {
+  color: var(--error);
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+.nfts-section h3,
+.posts-section h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 15px;
+}
+
+.nft-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  list-style: none;
+  padding: 0;
+}
+
+.nft-item {
+  background-color: rgba(255, 255, 255, 0.03);
+  padding: 15px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.nft-image {
+  width: 100%;
+  max-width: 150px;
+  height: auto;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.post-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.post-item {
+  background-color: rgba(255, 255, 255, 0.03);
+  padding: 15px;
+  border-radius: 4px;
+}
+
+.post-time {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .marketplace-link {
@@ -62,47 +167,34 @@
   background-color: var(--primary-hover);
 }
 
-.nfts-section,
-.posts-section {
-  margin-top: 20px;
-}
-
-.nft-list,
-.post-list {
-  list-style: none;
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }
 
-.nfts-section h3,
-.posts-section h3 {
-  font-size: 1.875rem;
-  font-weight: 700;
-  color: #1e40af; 
-  margin-bottom: 1rem;
-}
-
-.nft-item,
-.post-item {
-  background-color: rgba(255, 255, 255, 0.03);
-  padding: 10px;
-  border-radius: 4px;
-}
-
-.post-time {
-  font-size: 0.8em;
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.error {
-  color: #ff4d4d;
-  text-align: center;
-}
-  @media (max-width: 768px) {
+/* Responsive */
+@media (max-width: 768px) {
   .user-profile-container {
     padding: 15px;
     margin: 15px auto;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .bio-buttons {
+    flex-direction: column;
+  }
+
+  .nft-list {
+    grid-template-columns: 1fr;
   }
 }

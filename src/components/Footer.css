@@ -1,0 +1,56 @@
+footer {
+  background-color: #1a1a1a; /* Dark background for contrast */
+  padding: 20px 40px; /* Vertical and horizontal padding */
+  width: 100%; /* Full width */
+  box-sizing: border-box; /* Ensure padding doesn't affect width */
+}
+
+/* Style the container for social logos */
+.socialsLogos {
+  display: flex; /* Use Flexbox for horizontal alignment */
+  justify-content: flex-end; /* Align items to the right */
+  align-items: center; /* Vertically center the images */
+  gap: 20px; /* Even spacing between images */
+}
+
+/* Style individual social logo images */
+.socialsLogo {
+  width: 40px; /* Fixed width for consistency */
+  height: 40px; /* Fixed height for consistency */
+  object-fit: contain; /* Ensure images scale properly without distortion */
+  transition: transform 0.3s ease, opacity 0.3s ease; /* Smooth hover effects */
+}
+
+/* Hover effect for interactivity */
+.socialsLogo:hover {
+  transform: scale(1.1); /* Slightly enlarge on hover */
+  opacity: 0.8; /* Slight fade for feedback */
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .socialsLogos {
+    justify-content: center; /* Center logos on smaller screens */
+    gap: 15px; /* Slightly reduce spacing */
+  }
+
+  .socialsLogo {
+    width: 32px; /* Smaller images for mobile */
+    height: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  footer {
+    padding: 15px 20px; /* Reduce padding for very small screens */
+  }
+
+  .socialsLogos {
+    gap: 10px; /* Further reduce spacing */
+  }
+
+  .socialsLogo {
+    width: 28px; /* Even smaller images */
+    height: 28px;
+  }
+}

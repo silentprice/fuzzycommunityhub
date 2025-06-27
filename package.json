@@ -16,7 +16,7 @@
     "react-router-dom": "^7.6.2",
     "socket.io-client": "^4.8.1",
     "xrpl": "^4.3.0",
-    "xumm-sdk": "^1.11.2"
+    "xumm": "^1.8.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",

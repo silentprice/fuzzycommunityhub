@@ -1,6 +1,8 @@
 // src/pages/Community.jsx
 import SearchBar from '../components/SearchBar';
 import { useState } from 'react';
+import Xumm from 'xumm-sdk';
+import xrpl from 'xrpl';
 import './Community.css';
 
 function Community() {

@@ -17,8 +17,7 @@
   background-color: var(--brown);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+ 
 }
 
 * {
@@ -33,14 +32,14 @@ body {
   display: flex;
   flex-direction: column;
 }
-
+/*
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1.5rem;
-}
+}*/
 
-/* Navbar */
+/*
 nav {
   background-color: var(--primary);
   color: var(--text-light);
@@ -64,7 +63,7 @@ nav h1 {
 
 nav .nav-links {
   display: flex;
-  gap: 3rem; /* 48px, replaces space-x-12 */
+  gap: 3rem; 
 }
 
 nav a {
@@ -79,17 +78,17 @@ nav a {
 
 nav a:hover {
   background-color: var(--primary-hover);
-  color: #bfdbfe; /* blue-300 */
+  color: #bfdbfe; 
 }
 
 nav a.active {
   background-color: var(--primary-hover);
-}
+} 
 
 .fuzzy-image {
-  width: 60px; /* Adjust this value to make the image smaller */
-  height: auto; /* Maintains aspect ratio */
-}
+  width: 60px; 
+  height: auto; 
+}*/
 
 /* Hero */
 .hero {
@@ -141,7 +140,7 @@ nav a.active {
   margin-top: 1rem;
 }
 
-/* Footer */
+/* Footer 
 footer {
   background-color: var(--primary);
   color: var(--text-light);
@@ -169,7 +168,7 @@ footer img {
 
 footer img:hover {
   opacity: 0.8;
-}
+} */
 
 /* Profile */
 .profile-card {
@@ -233,7 +232,7 @@ a:hover {
   }
 }
 
-/* Light mode (optional, based on your original) */
+/* Light mode  */
 @media (prefers-color-scheme: light) {
   :root {
     color: var(--text-dark);
