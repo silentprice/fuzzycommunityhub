@@ -140,6 +140,33 @@ nav a.active {
   margin-top: 1rem;
 }
 
+/* QR Code Styles */
+.qr-code {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.qr-code h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-light);
+  margin-bottom: 0.5rem;
+}
+
+.qr-code img {
+  width: 200px;
+  height: 200px;
+  background-color: var(--white);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.qr-code .warning {
+  color: var(--error);
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
 /* Footer 
 footer {
   background-color: var(--primary);

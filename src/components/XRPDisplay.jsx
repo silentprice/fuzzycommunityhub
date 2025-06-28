@@ -6,33 +6,37 @@ function XRPDisplay({ account }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    let client;
     async function fetchAccountInfo() {
       if (!account) {
         setError('Please sign in to view account info.');
         return;
       }
       try {
-        const client = new Client('wss://s.altnet.rippletest.net:51233');
+        client = new Client('wss://s.altnet.rippletest.net:51233');
         await client.connect();
         const response = await client.request({
           command: 'account_info',
           account: account,
         });
         setAccountInfo(response.result);
-        await client.disconnect();
       } catch (err) {
         setError('Failed to fetch account info: ' + err.message);
-        console.error(err);
+      } finally {
+        if (client) await client.disconnect();
       }
     }
     fetchAccountInfo();
+    return () => {
+      if (client) client.disconnect();
+    };
   }, [account]);
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold">XRP Testnet Account</h2>
+    <div style={{ padding: '16px' }}>
+      <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>XRP Testnet Account</h2>
       {error ? (
-        <p className="text-red-600">{error}</p>
+        <p style={{ color: 'red' }}>{error}</p>
       ) : accountInfo ? (
         <p>Balance: {accountInfo.account_data.Balance / 1000000} XRP</p>
       ) : (

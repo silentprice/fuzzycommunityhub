@@ -2,8 +2,6 @@ import { useState, useEffect, Component } from 'react';
 import { Xumm } from 'xumm';
 import XRPDisplay from '../components/XRPDisplay';
 
-
-// Error Boundary
 class ErrorBoundary extends Component {
   state = { hasError: false, error: null };
   static getDerivedStateFromError(error) {
@@ -26,79 +24,96 @@ class ErrorBoundary extends Component {
 function Home({ account, setAccount }) {
   const [error, setError] = useState(null);
   const [qrCode, setQrCode] = useState(null);
+  const [xumm, setXumm] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  // Initialize Xumm SDK
-  let xumm = null;
-  try {
-    if (!import.meta.env.VITE_XUMM_API_KEY) {
-      throw new Error('Xumm API key is missing');
-    }
-    xumm = new Xumm(import.meta.env.VITE_XUMM_API_KEY);
-    console.log('Xumm instance:', xumm);
-    console.log('API Key:', import.meta.env.VITE_XUMM_API_KEY);
-  } catch (err) {
-    console.error('Xumm initialization error:', err);
-    setError('Failed to initialize Xaman SDK: ' + err.message);
-  }
-
-  // Set up Xumm event listeners
+  // Initialize Xumm once
   useEffect(() => {
-    if (xumm) {
-      console.log('Setting up Xumm event listeners...');
-      xumm.on('ready', () => console.log('Xumm SDK ready'));
+    if (!import.meta.env.VITE_XUMM_API_KEY) {
+      setError('Xumm API key is missing');
+      return;
+    }
+    const xummInstance = new Xumm(import.meta.env.VITE_XUMM_API_KEY);
+    console.log('Xumm instance constructed:', xummInstance);
+    setXumm(xummInstance);
+  }, []);
 
-      xumm.on('success', async () => {
-        try {
-          const accountAddress = await xumm.user.account;
-          console.log('Sign-in successful, account:', accountAddress);
-          setAccount(accountAddress);
-          setQrCode(null);
-          setError(null);
-        } catch (err) {
-          console.error('Error fetching account:', err);
-          setError('Failed to retrieve account address.');
-        }
-      });
+  // Listen to Xumm events
+  useEffect(() => {
+    if (!xumm) return;
 
-      xumm.on('logout', () => {
-        console.log('User logged out');
-        setAccount(null);
+    const onReady = () => console.log('Xumm SDK ready');
+    const onSuccess = async (payload) => {
+      console.log('Xumm sign-in success payload:', payload);
+      try {
+        // Get user account address from response
+        const accountAddress = payload.response?.account || (await xumm.user.account);
+        setAccount(accountAddress);
         setQrCode(null);
         setError(null);
-      });
-    }
-  }, [setAccount]);
+        setLoading(false);
+      } catch (e) {
+        console.error('Failed to get account:', e);
+        setError('Failed to retrieve account address.');
+        setLoading(false);
+      }
+    };
+    const onLogout = () => {
+      console.log('Xumm logged out');
+      setAccount(null);
+      setQrCode(null);
+      setError(null);
+    };
 
-  const handleXamanSignIn = async () => {
+    xumm.on('ready', onReady);
+    xumm.on('success', onSuccess);
+    xumm.on('logout', onLogout);
+
+    return () => {
+      xumm.removeListener('ready', onReady);
+      xumm.removeListener('success', onSuccess);
+      xumm.removeListener('logout', onLogout);
+    };
+  }, [xumm, setAccount]);
+
+  // The sign-in handler
+  const handleXummSignIn = async () => {
     try {
+      if (!xumm) throw new Error('Xumm SDK not initialized');
       setError(null);
       setQrCode(null);
-      if (!xumm) {
-        throw new Error('Xumm SDK not initialized');
-      }
-      console.log('Creating sign-in payload...');
+      setLoading(true);
+      console.log('Creating Xumm payload...');
+
+      // Create the sign-in payload
       const payload = await xumm.payload.create({
-        TransactionType: 'SignIn',
+        txjson: {
+          TransactionType: 'Payment',
+          Destination: 'rPT1Sjq2YGrBMTttX4GZHjKu9dyfzbpAYe',
+          Amount: '0',
+        },
+        options: { submit: false },
+        metadata: {
+          name: 'XRP Fuzzy Sign-In',
+          blob: 'Sign in to XRP Fuzzy community',
+        },
       });
-      console.log('Payload response:', payload);
-      if (payload && payload.created && payload.created.qr) {
-        console.log('QR Code URL:', payload.created.qr);
-        setQrCode(payload.created.qr);
-        console.log('Opening Xaman app:', payload.created.next.always);
-        window.open(payload.created.next.always, '_blank');
+
+      console.log('Payload created:', payload);
+
+      if (payload?.refs?.qr_png) {
+        setQrCode(payload.refs.qr_png);
+        setLoading(false);
       } else {
-        console.error('Invalid payload response:', payload);
-        setError('Failed to create Xaman sign-in payload.');
+        setError('QR code not available in payload response.');
+        setLoading(false);
       }
     } catch (err) {
-      console.error('Xaman sign-in error:', err);
-      setError('Error connecting to Xaman: ' + err.message);
+      console.error('Error during Xumm sign-in:', err);
+      setError('Error connecting to Xumm: ' + err.message);
       setQrCode(null);
+      setLoading(false);
     }
-  };
-
-  const handleJoeySignIn = () => {
-    setError('Joey Wallet integration not yet supported. Please use Xaman.');
   };
 
   return (
@@ -107,29 +122,33 @@ function Home({ account, setAccount }) {
         <div className="hero">
           <h1>XRP Fuzzy Community</h1>
           <p>Your ultimate hub for XRP enthusiasts, news, and discussions!</p>
+
           <div className="buttons">
-            <button onClick={handleXamanSignIn}>Sign in with Xaman</button>
-            <button onClick={handleJoeySignIn}>Sign in with Joey Wallet</button>
-            {xumm && (
-              <button
-                onClick={() => xumm.logout()}
-                style={{ display: account ? 'inline-block' : 'none' }}
-              >
+            <button onClick={handleXummSignIn} disabled={loading}>
+              {loading ? 'Loading...' : 'Sign in with Xumm'}
+            </button>
+
+            {xumm && account && (
+              <button onClick={() => xumm.logout()}>
                 Logout
               </button>
             )}
           </div>
+
           {qrCode && (
-            <div className="qr-code">
-              <img src={qrCode} alt="Xaman Sign-In QR Code" />
-              <p>Scan with Xaman app to sign in</p>
-              <p className="warning">Only scan QR codes from xrpfuzzy.com</p>
+            <div className="qr-code" style={{ marginTop: '20px' }}>
+              <img src={qrCode} alt="Xumm QR Code" style={{ maxWidth: '300px' }} />
+              <p>Scan with Xumm app to sign in</p>
+              <p className="warning" style={{ color: 'red' }}>Only scan QR codes from xrpfuzzy.com</p>
             </div>
           )}
+
           {account && <p>Connected Account: {account}</p>}
-          {error && <p className="error">{error}</p>}
+
+          {error && <p className="error" style={{ color: 'red' }}>{error}</p>}
         </div>
-        {xumm && <XRPDisplay account={account} />}
+
+        {xumm && account && <XRPDisplay account={account} />}
       </div>
     </ErrorBoundary>
   );

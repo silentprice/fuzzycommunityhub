@@ -23,7 +23,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/community" element={<Community />} />
             <Route path="/profile" element={<Profile account={account} />} />
-            <Route path="/profile/:wallet" element={<UserProfile account={account} />} />
+            <Route path="/profile/:wallet" element={<Profile account={account} />} />
             <Route path="/nft-marketplace" element={<NFTMarketplace />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
           </Routes>

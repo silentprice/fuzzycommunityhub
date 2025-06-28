@@ -1,5 +1,5 @@
 import SearchBar from '../components/SearchBar';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './Leaderboard.css';
 
 function Leaderboard() {
@@ -11,10 +11,22 @@ function Leaderboard() {
   const [filteredUsers, setFilteredUsers] = useState(users);
   const [sortBy, setSortBy] = useState('balance');
 
+  // Apply sorting whenever sortBy or filteredUsers changes
+  useEffect(() => {
+    const sorted = [...filteredUsers].sort((a, b) => b[sortBy] - a[sortBy]);
+    setFilteredUsers(sorted);
+  }, [sortBy]);
+
+  // Handle sorting button clicks
   const handleSort = (key) => {
     setSortBy(key);
-    const sorted = [...filteredUsers].sort((a, b) => b[key] - a[key]);
-    setFilteredUsers(sorted);
+  };
+
+  // Handle search filtering from SearchBar
+  const handleFilter = (filtered) => {
+    // Filter from full users list, then sort
+    const filteredSorted = filtered.sort((a, b) => b[sortBy] - a[sortBy]);
+    setFilteredUsers(filteredSorted);
   };
 
   return (
@@ -24,7 +36,7 @@ function Leaderboard() {
         <p>Check out the top $FUZZY holders and community contributors!</p>
         <SearchBar
           posts={users}
-          setFilteredPosts={setFilteredUsers}
+          setFilteredPosts={handleFilter}
           keys={['username', 'wallet']} // Search by username or wallet
         />
       </div>

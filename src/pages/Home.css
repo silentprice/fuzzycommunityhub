@@ -1,0 +1,42 @@
+/* src/styles/Home.css */
+
+.home {
+  text-align: center;
+  padding: 2rem;
+  background-color: var(--brown); /* rgb(77, 46, 6) */
+  color: var(--text-light);
+}
+
+.home h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.home button {
+  background-color: var(--primary);
+  color: var(--text-light);
+  padding: 0.75rem 2rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.home button:hover {
+  background-color: var(--primary-hover);
+}
+
+.qr-code {
+  margin-top: 1rem;
+}
+
+.qr-code img {
+  width: 200px;
+  height: 200px;
+}
+
+.error {
+  color: var(--error);
+  margin-top: 1rem;
+}

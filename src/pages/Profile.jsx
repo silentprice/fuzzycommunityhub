@@ -2,9 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import UserProfile from '../components/UserProfile';
 
-
 function Profile({ account }) {
-  const { wallet } = useParams(); // Get wallet address from URL
+  const { wallet } = useParams();
   const [user, setUser] = useState({
     username: 'FuzzyFan',
     wallet: account || wallet || 'rXRP...1234',
@@ -12,7 +11,6 @@ function Profile({ account }) {
   });
 
   useEffect(() => {
-    // Update user data based on signed-in account or URL wallet
     if (account || wallet) {
       setUser((prev) => ({
         ...prev,
