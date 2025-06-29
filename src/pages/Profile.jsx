@@ -1,42 +1,43 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+// src/pages/Profile.jsx
+import { Component } from 'react';
 import UserProfile from '../components/UserProfile';
 
-function Profile({ account }) {
-  const { wallet } = useParams();
-  const [user, setUser] = useState({
-    username: 'FuzzyFan',
-    wallet: account || wallet || 'rXRP...1234',
-    bio: 'XRP enthusiast and $FUZZY holder!',
-  });
-
-  useEffect(() => {
-    if (account || wallet) {
-      setUser((prev) => ({
-        ...prev,
-        wallet: account || wallet,
-      }));
+class ProfileErrorBoundary extends Component {
+  state = { hasError: false, error: null };
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="container">
+          <div className="hero">
+            <p className="error" style={{ color: 'red' }}>
+              Error: {this.state.error.message}
+            </p>
+          </div>
+        </div>
+      );
     }
-  }, [account, wallet]);
+    return this.props.children;
+  }
+}
 
+function Profile({ account }) {
+  console.log('Profile page rendered, account prop:', account);
   return (
-    <div className="container">
-      <div className="hero">
-        <h1>User Profile</h1>
-        <div className="user-info">
-          <h3>{user.username}</h3>
-          <p><strong>Wallet:</strong> {user.wallet}</p>
-          <p><strong>Bio:</strong> {user.bio}</p>
-          {account === user.wallet && (
-            <button className="edit-button">Edit Profile</button>
+    <ProfileErrorBoundary>
+      <div className="container">
+        <div className="hero">
+          <h1>Profile</h1>
+          {!account ? (
+            <p>Please sign in to view your profile.</p>
+          ) : (
+            <UserProfile account={account} />
           )}
         </div>
-        <div className="xrp-stats">
-          <h3>XRP Activity</h3>
-          <UserProfile account={user.wallet} />
-        </div>
       </div>
-    </div>
+    </ProfileErrorBoundary>
   );
 }
 

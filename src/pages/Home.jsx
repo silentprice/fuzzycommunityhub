@@ -1,28 +1,29 @@
-// src/pages/Home.jsx
-import { useState, useEffect, Component } from 'react';
+import { useState, useEffect } from 'react';
 import { Xumm } from 'xumm';
+import { useNavigate } from 'react-router-dom';
 import XRPDisplay from '../components/XRPDisplay';
 import { XUMM_CONFIG } from '../config';
 
-class ErrorBoundary extends Component {
-  state = { hasError: false, error: null };
-  static getDerivedStateFromError(error) {
-    return { hasError: true, error };
-  }
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="container">
-          <div className="hero">
-            <p className="error" style={{ color: 'red' }}>
-              Error: {this.state.error.message}
-            </p>
-          </div>
+function ErrorBoundary({ children }) {
+  const [hasError, setHasError] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    return () => {};
+  }, []);
+
+  if (hasError) {
+    return (
+      <div className="container">
+        <div className="hero">
+          <p className="error" style={{ color: 'red' }}>
+            Error: {error?.message || 'An error occurred'}
+          </p>
         </div>
-      );
-    }
-    return this.props.children;
+      </div>
+    );
   }
+  return children;
 }
 
 function Home({ account, setAccount }) {
@@ -33,8 +34,9 @@ function Home({ account, setAccount }) {
   const [loading, setLoading] = useState(false);
   const [websocketStatus, setWebsocketStatus] = useState(null);
   const [payloadUuid, setPayloadUuid] = useState(null);
+  const navigate = useNavigate();
 
-  // Init Xumm SDK only once
+  // Initialize Xumm SDK only once
   useEffect(() => {
     if (xumm) return;
     if (!XUMM_CONFIG.apiKey) {
@@ -68,29 +70,14 @@ function Home({ account, setAccount }) {
     });
     setXumm(xummInstance);
     console.log('Xumm instance constructed:', xummInstance);
+
     return () => {
       console.log('Cleaning up Xumm instance');
+      xummInstance.logout().catch((err) => {
+        console.error('Cleanup logout error:', err);
+      });
     };
-  }, []);
-
-  // Load account from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem('xummAccount');
-    if (saved && !account) {
-      setAccount(saved);
-      console.log('Loaded account from localStorage:', saved);
-    }
-  }, [account, setAccount]);
-
-  useEffect(() => {
-    if (account) {
-      localStorage.setItem('xummAccount', account);
-      console.log('Saved account to localStorage:', account);
-    } else {
-      localStorage.removeItem('xummAccount');
-      console.log('Cleared account from localStorage');
-    }
-  }, [account]);
+  }, [xumm, setAccount]);
 
   // Poll payload status
   const pollPayloadStatus = async (uuid) => {
@@ -199,20 +186,27 @@ function Home({ account, setAccount }) {
     }
   };
 
-  // Logout clears session
-  const handleLogout = () => {
-    setAccount(null);
-    setQrCode(null);
-    setError(null);
-    setPayloadUuid(null);
-    if (xumm) xumm.logout();
-    console.log('Logged out');
+  // Logout function
+  const handleLogout = async () => {
+    console.log('Logout initiated');
+    try {
+      if (xumm) {
+        await xumm.logout();
+        console.log('Xumm session terminated');
+      }
+      // Reset all relevant state
+      setAccount(null);
+      setQrCode(null);
+      setPayloadUuid(null);
+      setError(null);
+      setLoading(false);
+      console.log('State reset after logout');
+      navigate('/');
+    } catch (err) {
+      console.error('Logout error:', err.message, err.stack);
+      setError('Failed to log out. Please try again.');
+    }
   };
-
-  // Debug button state
-  useEffect(() => {
-    console.log('Current loading state:', loading);
-  }, [loading]);
 
   return (
     <ErrorBoundary>
@@ -228,7 +222,9 @@ function Home({ account, setAccount }) {
               </button>
             )}
             {account && (
-              <button onClick={handleLogout}>Logout</button>
+              <button onClick={handleLogout} disabled={loading}>
+                Logout
+              </button>
             )}
             {loading && (
               <button onClick={() => setLoading(false)}>Reset Loading</button>
