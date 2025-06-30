@@ -1,6 +1,6 @@
 import SearchBar from '../components/SearchBar';
 import { useState } from 'react';
-import Xumm from 'xumm-sdk';
+import Xumm from 'xumm';
 import xrpl from 'xrpl';
 import './Community.css';
 

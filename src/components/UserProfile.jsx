@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Client } from 'xrpl';
-import './UserProfile.css'; // Assuming you have a CSS file for styling
+import './UserProfile.css';
 
 function UserProfile({ account }) {
   const [accountInfo, setAccountInfo] = useState(null);

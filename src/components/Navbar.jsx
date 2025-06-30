@@ -17,6 +17,16 @@ function Navbar() {
           <img src={fuzzy} className="fuzzy-image" alt="Fuzzy 4" />
         </div>
         <div className="nav-links">
+
+          <a 
+            href="https://fuzzyxrp.com/learn" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className={({ isActive }) => (isActive ? 'active' : '')}
+          >
+            Learn More
+          </a>
+
           <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>
             Home
           </NavLink>
