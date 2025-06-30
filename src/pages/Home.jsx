@@ -200,6 +200,9 @@ function Home({ account, setAccount }) {
       setPayloadUuid(null);
       setError(null);
       setLoading(false);
+
+      localStorage.removeItem('xumm_token');
+      sessionStorage.removeIt
       console.log('State reset after logout');
       navigate('/');
     } catch (err) {
