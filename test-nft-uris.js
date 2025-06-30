@@ -1,4 +1,3 @@
-// test-nft-uris.js
 import { Client } from 'xrpl';
 
 async function getNFTs() {

@@ -1,4 +1,3 @@
-// src/pages/Community.jsx
 import SearchBar from '../components/SearchBar';
 import { useState } from 'react';
 import Xumm from 'xumm-sdk';

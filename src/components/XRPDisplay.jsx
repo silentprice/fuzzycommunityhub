@@ -1,4 +1,3 @@
-// src/components/XRPDisplay.jsx
 import { useState, useEffect } from 'react';
 import { Client } from 'xrpl';
 import { XRPL_CONFIG } from '../config';

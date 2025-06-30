@@ -1,4 +1,3 @@
-// src/pages/Profile.jsx
 import { Component } from 'react';
 import UserProfile from '../components/UserProfile';
 

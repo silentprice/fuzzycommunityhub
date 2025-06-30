@@ -1,4 +1,3 @@
-// src/xrpl.js
 import { Client, isValidAddress } from 'xrpl';
 import { XRPL_CONFIG } from './config';
 
