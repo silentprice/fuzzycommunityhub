@@ -7,8 +7,10 @@ import './footer.css';
 function Footer() {
   return (
     <footer className="footer">
-      <div className="footerContent">
+      <div className="footer-center">
         <img className="fuzzonxblue-logo" src={fuzzyXblue} alt="Fuzzy on X Blue Logo" />
+      </div>
+      <div className="footer-right">
         <div className="socialsLogos">
           <a href="https://x.com/fuzzy_xrp" target="_blank" rel="noopener noreferrer">
             <img className="socialsLogo" src={xIcon} alt="X Social Link" />
