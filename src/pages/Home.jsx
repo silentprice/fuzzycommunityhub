@@ -3,6 +3,7 @@ import { Xumm } from 'xumm';
 import { useNavigate } from 'react-router-dom';
 import XRPDisplay from '../components/XRPDisplay';
 import { XUMM_CONFIG } from '../config';
+import fuzzyAnimation from '../assets/FuzzyPUMP.gif';
 
 function ErrorBoundary({ children }) {
   const [hasError, setHasError] = useState(false);
@@ -273,6 +274,9 @@ function Home({ account, setAccount }) {
         </div>
 
         {xumm && account && <XRPDisplay account={account} />}
+        <div className="fuzzy-gif">
+          <img src={fuzzyAnimation} alt="Fuzzy Animation" />
+        </div>
       </div>
     </ErrorBoundary>
   );
