@@ -11,6 +11,22 @@
   overflow: hidden;
 }
 
+.footer-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between p elements */
+  padding-left: 20px;
+}
+
+.footer-left p {
+  display: inline-block; /* Ensures p elements stay on one line */
+  font-size: 0.9rem;
+  color: #ffffff;
+  margin: 0;
+  white-space: nowrap; /* Prevents text wrapping */
+}
+
 .footer-center {
   position: absolute;
   left: 50%;

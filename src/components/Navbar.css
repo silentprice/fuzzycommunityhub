@@ -1,9 +1,9 @@
 nav {
-  background-image: url('../assets/fuzheader.png'); /* Background image */
-  background-size: cover; /* Cover the navbar */
-  background-position: 50% 10%; /* Center the image */
-  background-color: rgba(77, 46, 6, 0.7); /* Semi-transparent overlay matching --brown */
-  background-blend-mode: overlay; /* Blend overlay with image */
+  background-image: url('../assets/fuzzycrew1.png');
+  background-size: cover;
+  background-position: 50% 20%;
+  background-color: rgba(77, 46, 6, 0.7);
+  background-blend-mode: overlay;
   color: var(--text-light);
   padding: 1.5rem 0;
   position: sticky;

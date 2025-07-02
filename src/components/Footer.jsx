@@ -7,6 +7,10 @@ import './footer.css';
 function Footer() {
   return (
     <footer className="footer">
+      <div className="footer-left">
+        <p>NOT AFFILIATED WITH FUZZY</p>
+        <p>Only a community & learning hub</p>
+      </div>
       <div className="footer-center">
         <img className="fuzzonxblue-logo" src={fuzzyXblue} alt="Fuzzy on X Blue Logo" />
       </div>
