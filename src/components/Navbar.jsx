@@ -27,6 +27,9 @@ function Navbar() {
             Learn More
           </a>
 
+        <NavLink to="/whodev" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>
+          Who Dev?
+        </NavLink>
           <NavLink to="/" className={({ isActive }) => (isActive ? 'active' : '')}>
             Home
           </NavLink>

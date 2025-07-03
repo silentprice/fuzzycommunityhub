@@ -2,6 +2,7 @@ import { useState, createContext } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import About from './pages/About';
+import WhoDev from './pages/WhoDev';
 import Community from './pages/Community';
 import Profile from './pages/Profile';
 import NFTMarketplace from './pages/NFTMarketplace';
@@ -20,7 +21,7 @@ function App() {
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
           <Navbar account={account} />
           <main style={{ flexGrow: 1 }}>
-            <Routes>
+            <Routes> 
               <Route path="/" element={<Home account={account} setAccount={setAccount} />} />
               <Route path="/login" element={<Home account={account} setAccount={setAccount} />} />
               <Route path="/about" element={<About />} />
@@ -29,6 +30,7 @@ function App() {
               <Route path="/profile/:wallet" element={<Profile account={account} />} />
               <Route path="/nft-marketplace" element={<NFTMarketplace />} />
               <Route path="/leaderboard" element={<Leaderboard />} />
+              <Route path="/whodev" element={<WhoDev />} />
             </Routes>
           </main>
           <Footer />
