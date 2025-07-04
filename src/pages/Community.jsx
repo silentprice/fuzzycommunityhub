@@ -19,13 +19,13 @@ function Community({ account }) {
       setLoadingPosts(true);
       try {
         // Fetch posts
-        const resPosts = await fetch('/api/posts');
+        const resPosts = await fetch('http://localhost:3000/api/posts');
         if (!resPosts.ok) throw new Error('Failed to fetch posts');
         const postsData = await resPosts.json();
 
         // Fetch comments for all posts concurrently
         const commentsPromises = postsData.map(post =>
-          fetch(`/api/comments/${post.postId}`).then(res => res.json())
+          fetch(`http://localhost:3000/api/comments/${post.postId}`).then(res => res.json())
         );
         const commentsData = await Promise.all(commentsPromises);
 
@@ -37,7 +37,7 @@ function Community({ account }) {
 
         // Fetch likes for all posts concurrently
         const likesPromises = postsData.map(post =>
-          fetch(`/api/likes/${post.postId}`).then(res => res.json())
+          fetch(`http://localhost:3000/api/likes/${post.postId}`).then(res => res.json())
         );
         const likesData = await Promise.all(likesPromises);
 
@@ -74,7 +74,7 @@ function Community({ account }) {
       return;
     }
     try {
-      const res = await fetch('/api/posts', {
+      const res = await fetch('http://localhost:3000/api/posts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -101,7 +101,7 @@ function Community({ account }) {
       return;
     }
     try {
-      const res = await fetch('/api/comments', {
+      const res = await fetch('http://localhost:3000/api/comments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -127,7 +127,7 @@ function Community({ account }) {
     }
     if (likedByCurrentUser[postId]) return; // prevent duplicate likes
     try {
-      const res = await fetch('/api/likes', {
+      const res = await fetch('http://localhost:3000/api/likes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -146,12 +146,12 @@ function Community({ account }) {
   const refreshPosts = async () => {
     if (!account?.userId) return;
     try {
-      const resPosts = await fetch('/api/posts');
+      const resPosts = await fetch('http://localhost:3000/api/posts');
       if (!resPosts.ok) throw new Error('Failed to fetch posts');
       const postsData = await resPosts.json();
 
       const commentsPromises = postsData.map(post =>
-        fetch(`/api/comments/${post.postId}`).then(res => res.json())
+        fetch(`http://localhost:3000/api/comments/${post.postId}`).then(res => res.json())
       );
       const commentsData = await Promise.all(commentsPromises);
 
@@ -161,7 +161,7 @@ function Community({ account }) {
       }));
 
       const likesPromises = postsData.map(post =>
-        fetch(`/api/likes/${post.postId}`).then(res => res.json())
+        fetch(`http://localhost:3000/api/likes/${post.postId}`).then(res => res.json())
       );
       const likesData = await Promise.all(likesPromises);
 

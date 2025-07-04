@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import XRPDisplay from '../components/XRPDisplay';
 import { XUMM_CONFIG } from '../config';
 import fuzzyAnimation from '../assets/FuzzyPUMP.gif';
+import Community from './Community';
 
 function ErrorBoundary({ children }) {
   const [hasError, setHasError] = useState(false);
@@ -29,7 +30,7 @@ function ErrorBoundary({ children }) {
 
 // Helper function to call backend to check/create user by wallet address
 async function fetchOrCreateUser(walletAddress) {
-  const res = await fetch('http://localhost:3000/users/checkOrCreate', {
+  const res = await fetch('http://localhost:3000/api/users/checkOrCreate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ walletAddress }),
@@ -299,6 +300,7 @@ function Home({ account, setAccount }) {
         </div>
 
         {xumm && account && <XRPDisplay account={account} />}
+        {account && username && <Community account={account} username={username} />}
         <div className="fuzzy-gif">
           <img src={fuzzyAnimation} alt="Fuzzy Animation" />
         </div>

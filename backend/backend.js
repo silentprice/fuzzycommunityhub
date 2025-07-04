@@ -98,7 +98,7 @@ function getNextFuzzyNumber() {
 }
 
 // Endpoint to check or create user on login
-app.post('/users/checkOrCreate', async (req, res) => {
+app.post('/api/users/checkOrCreate', async (req, res) => {
   const { walletAddress } = req.body;
   if (!walletAddress) {
     return res.status(400).json({ error: 'walletAddress required' });
@@ -139,11 +139,8 @@ app.post('/users/checkOrCreate', async (req, res) => {
   });
 });
 
-// Other endpoints for posts, comments, likes as you had before...
-// I'll include them again here for completeness:
-
 // Create post
-app.post('/posts', (req, res) => {
+app.post('/api/posts', (req, res) => {
   const { userId, username, content } = req.body;
   if (!userId || !username || !content) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -162,7 +159,7 @@ app.post('/posts', (req, res) => {
 });
 
 // Get posts
-app.get('/posts', (req, res) => {
+app.get('/api/posts', (req, res) => {
   db.all('SELECT * FROM posts ORDER BY createdAt DESC', [], (err, rows) => {
     if (err) {
       console.error('Get posts error:', err);
@@ -173,7 +170,7 @@ app.get('/posts', (req, res) => {
 });
 
 // Add comment
-app.post('/comments', (req, res) => {
+app.post('/api/comments', (req, res) => {
   const { postId, userId, username, content } = req.body;
   if (!postId || !userId || !username || !content) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -192,7 +189,7 @@ app.post('/comments', (req, res) => {
 });
 
 // Add like
-app.post('/likes', (req, res) => {
+app.post('/api/likes', (req, res) => {
   const { postId, userId } = req.body;
   if (!postId || !userId) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -220,7 +217,7 @@ app.post('/likes', (req, res) => {
 });
 
 // Get likes for a post
-app.get('/likes/:postId', (req, res) => {
+app.get('/api/likes/:postId', (req, res) => {
   const { postId } = req.params;
   db.all('SELECT userId FROM likes WHERE postId = ?', [postId], (err, rows) => {
     if (err) {
@@ -232,7 +229,7 @@ app.get('/likes/:postId', (req, res) => {
 });
 
 // Get comments for a post
-app.get('/comments/:postId', (req, res) => {
+app.get('/api/comments/:postId', (req, res) => {
   const { postId } = req.params;
   db.all('SELECT * FROM comments WHERE postId = ? ORDER BY createdAt', [postId], (err, rows) => {
     if (err) {
