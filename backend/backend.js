@@ -1,40 +1,43 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
-const xrpl = require('xrpl');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
 const app = express();
-app.use(cors({ origin: 'https://http://localhost:5173/' }));
+app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      connectSrc: ["'self'", 'https://xumm.app', 'wss://xrpl.ws'],
-      scriptSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      imgSrc: ["'self'", 'data:', 'https://xrpfuzzy.com']
-    }
-  }
-}));
-app.use(rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100 
-}));
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        connectSrc: ["'self'", 'https://xumm.app', 'wss://xrpl.ws'],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", 'data:', 'https://xrpfuzzy.com'],
+      },
+    },
+  })
+);
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+  })
+);
 
 // Initialize SQLite
 const db = new sqlite3.Database('fuzzycommunityhub.db', (err) => {
   if (err) console.error('Database error:', err);
-  console.log('Connected to SQLite database');
+  else console.log('Connected to SQLite database');
 });
 
 // Create tables
 db.serialize(() => {
   db.run(`
     CREATE TABLE IF NOT EXISTS users (
-      userId TEXT PRIMARY KEY,
+      userId TEXT PRIMARY KEY,  -- wallet address
       username TEXT UNIQUE,
       createdAt DATETIME
     )
@@ -72,66 +75,72 @@ db.serialize(() => {
   `);
 });
 
-// Generate session token
-function generateSessionToken() {
-  return require('crypto').randomBytes(32).toString('hex');
-}
+// Helper to get next username number
+function getNextFuzzyNumber() {
+  return new Promise((resolve, reject) => {
+    db.get(
+      `SELECT username FROM users WHERE username LIKE 'fuzzy%' ORDER BY LENGTH(username) DESC, username DESC LIMIT 1`,
+      [],
+      (err, row) => {
+        if (err) return reject(err);
+        if (!row) return resolve(1); // no user yet, start at 1
 
-// Verify XRPL signature and create session
-app.post('/auth/xaman', async (req, res) => {
-  const { walletAddress, signature, nonce } = req.body;
-  if (!walletAddress || !signature || !nonce) {
-    return res.status(400).json({ error: 'Missing required fields' });
-  }
-  try {
-    const client = new xrpl.Client('wss://xrpl.ws');
-    await client.connect();
-    const isValid = xrpl.verifySignature(nonce, signature, walletAddress);
-    await client.disconnect();
-
-    if (!isValid) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const userId = require('crypto').randomUUID();
-    const sessionToken = generateSessionToken();
-    res.json({ token: sessionToken, userId });
-  } catch (error) {
-    console.error('Auth error:', error);
-    res.status(500).json({ error: 'Authentication failed' });
-  }
-});
-
-// Save username
-app.post('/auth/username', (req, res) => {
-  const { userId, username } = req.body;
-  if (!userId || !username) {
-    return res.status(400).json({ error: 'Missing required fields' });
-  }
-  if (!/^[a-zA-Z0-9_-]{3,16}$/.test(username)) {
-    return res.status(400).json({ error: 'Username must be 3-16 characters, letters, numbers, _, or -' });
-  }
-  db.get('SELECT username FROM users WHERE username = ?', [username], (err, row) => {
-    if (err) {
-      console.error('Username check error:', err);
-      return res.status(500).json({ error: 'Failed to check username' });
-    }
-    if (row) {
-      return res.status(400).json({ error: 'Username taken' });
-    }
-    db.run(
-      'INSERT INTO users (userId, username, createdAt) VALUES (?, ?, ?)',
-      [userId, username, new Date().toISOString()],
-      (err) => {
-        if (err) {
-          console.error('Username save error:', err);
-          return res.status(500).json({ error: 'Failed to save username' });
+        // Extract number from username "fuzzy123"
+        const match = row.username.match(/^fuzzy(\d+)$/);
+        if (match) {
+          resolve(parseInt(match[1], 10) + 1);
+        } else {
+          resolve(1);
         }
-        res.json({ message: 'Username saved' });
       }
     );
   });
+}
+
+// Endpoint to check or create user on login
+app.post('/users/checkOrCreate', async (req, res) => {
+  const { walletAddress } = req.body;
+  if (!walletAddress) {
+    return res.status(400).json({ error: 'walletAddress required' });
+  }
+
+  // Check if user exists
+  db.get('SELECT * FROM users WHERE userId = ?', [walletAddress], async (err, user) => {
+    if (err) {
+      console.error('DB error:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
+    if (user) {
+      // User exists, return username
+      return res.json({ userId: user.userId, username: user.username });
+    } else {
+      // Create new user with next fuzzy username
+      try {
+        const nextNum = await getNextFuzzyNumber();
+        const username = `fuzzy${nextNum}`;
+        const createdAt = new Date().toISOString();
+
+        db.run(
+          'INSERT INTO users (userId, username, createdAt) VALUES (?, ?, ?)',
+          [walletAddress, username, createdAt],
+          function (insertErr) {
+            if (insertErr) {
+              console.error('Insert user error:', insertErr);
+              return res.status(500).json({ error: 'Failed to create user' });
+            }
+            return res.json({ userId: walletAddress, username });
+          }
+        );
+      } catch (error) {
+        console.error('Error generating username:', error);
+        return res.status(500).json({ error: 'Failed to assign username' });
+      }
+    }
+  });
 });
+
+// Other endpoints for posts, comments, likes as you had before...
+// I'll include them again here for completeness:
 
 // Create post
 app.post('/posts', (req, res) => {

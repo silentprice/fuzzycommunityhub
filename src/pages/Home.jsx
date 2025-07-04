@@ -27,6 +27,17 @@ function ErrorBoundary({ children }) {
   return children;
 }
 
+// Helper function to call backend to check/create user by wallet address
+async function fetchOrCreateUser(walletAddress) {
+  const res = await fetch('http://localhost:3000/users/checkOrCreate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ walletAddress }),
+  });
+  if (!res.ok) throw new Error('Failed to fetch or create user');
+  return await res.json(); // expects { userId, username }
+}
+
 function Home({ account, setAccount }) {
   console.log('Home component rendered');
   const [error, setError] = useState(null);
@@ -35,9 +46,9 @@ function Home({ account, setAccount }) {
   const [loading, setLoading] = useState(false);
   const [websocketStatus, setWebsocketStatus] = useState(null);
   const [payloadUuid, setPayloadUuid] = useState(null);
+  const [username, setUsername] = useState(null); // new state to store username
   const navigate = useNavigate();
 
-  // Initialize Xumm SDK only once
   useEffect(() => {
     if (xumm) return;
     if (!XUMM_CONFIG.apiKey) {
@@ -54,13 +65,18 @@ function Home({ account, setAccount }) {
       console.log('Xumm authorize success');
       try {
         const account = await xummInstance.user.account;
+
+        // Backend call to get or create username linked to wallet
+        const userData = await fetchOrCreateUser(account);
+        setUsername(userData.username);
+
         setAccount(account);
         setQrCode(null);
         setLoading(false);
-        console.log('Signed in:', account);
+        console.log('Signed in:', account, 'username:', userData.username);
       } catch (err) {
         console.error('Authorize account error:', err.message, err.stack);
-        setError(`Failed to get account: ${err.message}`);
+        setError(`Failed to get account or user: ${err.message}`);
         setLoading(false);
       }
     });
@@ -80,7 +96,6 @@ function Home({ account, setAccount }) {
     };
   }, [xumm, setAccount]);
 
-  // Poll payload status
   const pollPayloadStatus = async (uuid) => {
     console.log('Polling payload status for UUID:', uuid);
     try {
@@ -91,6 +106,15 @@ function Home({ account, setAccount }) {
       const data = await response.json();
       console.log('Payload status:', data);
       if (data.response?.account && data.meta?.resolved) {
+        // Fetch or create username on payload resolution
+        try {
+          const userData = await fetchOrCreateUser(data.response.account);
+          setUsername(userData.username);
+        } catch (err) {
+          console.error('Failed to fetch/create user after payload:', err);
+          setError('Failed to fetch user after login');
+        }
+
         setAccount(data.response.account);
         setQrCode(null);
         setLoading(false);
@@ -112,7 +136,6 @@ function Home({ account, setAccount }) {
     }
   };
 
-  // Test WebSocket connection
   const testWebSocket = () => {
     console.log('Testing WebSocket connection...');
     setWebsocketStatus(null);
@@ -128,7 +151,6 @@ function Home({ account, setAccount }) {
     };
   };
 
-  // Test HTTP connection
   const testHttp = async () => {
     console.log('Testing HTTP connection to xumm.app...');
     setWebsocketStatus(null);
@@ -146,7 +168,6 @@ function Home({ account, setAccount }) {
     }
   };
 
-  // Main sign-in logic
   const handleXummSignIn = async () => {
     console.log('Sign-in button clicked, loading:', loading);
     if (!xumm) {
@@ -187,7 +208,6 @@ function Home({ account, setAccount }) {
     }
   };
 
-  // Logout function
   const handleLogout = async () => {
     console.log('Logout initiated');
     try {
@@ -195,15 +215,15 @@ function Home({ account, setAccount }) {
         await xumm.logout();
         console.log('Xumm session terminated');
       }
-      // Reset all relevant state
       setAccount(null);
+      setUsername(null);
       setQrCode(null);
       setPayloadUuid(null);
       setError(null);
       setLoading(false);
 
       localStorage.removeItem('xumm_token');
-      sessionStorage.removeIt
+      sessionStorage.removeItem('xumm_token');
       console.log('State reset after logout');
       navigate('/');
     } catch (err) {
@@ -257,6 +277,11 @@ function Home({ account, setAccount }) {
               <p>
                 <strong>Connected Account:</strong> {account}
               </p>
+              {username && (
+                <p>
+                  <strong>Username:</strong> {username}
+                </p>
+              )}
             </div>
           )}
 

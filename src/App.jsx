@@ -21,11 +21,11 @@ function App() {
         <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
           <Navbar account={account} />
           <main style={{ flexGrow: 1 }}>
-            <Routes> 
+            <Routes>
               <Route path="/" element={<Home account={account} setAccount={setAccount} />} />
               <Route path="/login" element={<Home account={account} setAccount={setAccount} />} />
               <Route path="/about" element={<About />} />
-              <Route path="/community" element={<Community />} />
+              <Route path="/community" element={<Community account={account} />} />
               <Route path="/profile" element={<Profile account={account} />} />
               <Route path="/profile/:wallet" element={<Profile account={account} />} />
               <Route path="/nft-marketplace" element={<NFTMarketplace />} />
