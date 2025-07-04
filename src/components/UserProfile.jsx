@@ -9,10 +9,8 @@ function UserProfile({ account }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fuzzybear issuer address
   const FUZZYBEAR_ISSUER = 'rw1R8cfHGMySmbj7gJ1HkiCqTY1xhLGYAs';
 
-  // Utility: decode hex string NFT URI to ASCII
   const decodeHexToAscii = (hex) => {
     if (!hex) return '';
     try {
@@ -25,7 +23,6 @@ function UserProfile({ account }) {
     }
   };
 
-  // Fetch metadata JSON from IPFS gateway and fix image URL
   const fetchNFTMetadata = async (uriHex) => {
     try {
       const uriAscii = decodeHexToAscii(uriHex);
@@ -74,9 +71,9 @@ function UserProfile({ account }) {
   };
 
   useEffect(() => {
-    if (!account) return;
+    if (!account?.userId) return;
 
-    const client = new Client('wss://s1.ripple.com'); // Reliable Mainnet node
+    const client = new Client('wss://s1.ripple.com');
 
     async function fetchData() {
       setLoading(true);
@@ -86,22 +83,20 @@ function UserProfile({ account }) {
       setNftMetadata({});
 
       try {
-        console.log('Connecting to XRPL for account:', account);
+        console.log('Connecting to XRPL for account:', account.userId);
         await client.connect();
 
-        // Fetch account info (kept in case needed later)
         const info = await client.request({
           command: 'account_info',
-          account: account,
+          account: account.userId,
           ledger_index: 'validated',
         });
         setAccountInfo(info.result.account_data);
         console.log('Account Info:', info.result.account_data);
 
-        // Fetch NFTs
         const nftsResponse = await client.request({
           command: 'account_nfts',
-          account: account,
+          account: account.userId,
           ledger_index: 'validated',
         });
         console.log('Raw NFT Response:', nftsResponse);
@@ -116,16 +111,13 @@ function UserProfile({ account }) {
         const ownedNFTs = nftsResponse.result.account_nfts;
         console.log('All NFTs:', ownedNFTs.map(nft => ({ NFTokenID: nft.NFTokenID, Issuer: nft.Issuer, Taxon: nft.Taxon })));
 
-        // Filter for Fuzzybear NFTs
         const fuzzybearNFTs = ownedNFTs.filter(nft => nft.Issuer === FUZZYBEAR_ISSUER);
         console.log('Fuzzybear NFTs:', fuzzybearNFTs);
 
-        // Fetch metadata for Fuzzybear NFTs
         const metadataPromises = fuzzybearNFTs.map(nft => fetchNFTMetadata(nft.URI));
         const metadataResults = await Promise.all(metadataPromises);
         console.log('Metadata Results:', metadataResults);
 
-        // Combine NFTID and metadata
         const metadataMap = {};
         fuzzybearNFTs.forEach((nft, idx) => {
           metadataMap[nft.NFTokenID] = metadataResults[idx] || { name: 'Unnamed Fuzzybear', description: 'No metadata' };
@@ -150,7 +142,7 @@ function UserProfile({ account }) {
     };
   }, [account]);
 
-  if (!account) {
+  if (!account?.userId) {
     return <p>Please connect your wallet to view your NFTs.</p>;
   }
 
@@ -163,12 +155,16 @@ function UserProfile({ account }) {
   }
 
   if (!nfts.length) {
-    return <p>No Fuzzybear NFTs found in wallet {account}</p>;
+    return <p>No Fuzzybear NFTs found in wallet {account.userId}</p>;
   }
 
   return (
     <div>
       <h2>Your Fuzzybear NFTs</h2>
+      <p>
+        <strong>Wallet:</strong> {account.userId}<br />
+        <strong>Username:</strong> {account.username}
+      </p>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
         {nfts.map(nft => {
           const meta = nftMetadata[nft.NFTokenID];

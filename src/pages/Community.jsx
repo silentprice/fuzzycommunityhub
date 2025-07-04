@@ -2,6 +2,8 @@ import SearchBar from '../components/SearchBar';
 import { useState, useEffect } from 'react';
 
 function Community({ account }) {
+  console.log('Community account prop:', account);
+
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [newPost, setNewPost] = useState('');
@@ -11,37 +13,31 @@ function Community({ account }) {
   const [likes, setLikes] = useState({}); // { postId: [userId, ...] }
   const [likedByCurrentUser, setLikedByCurrentUser] = useState({}); // { postId: true/false }
 
-  // Fetch posts and related comments + likes on mount and after new post/comment/like
   useEffect(() => {
     if (!account?.userId) return;
 
     const fetchPosts = async () => {
       setLoadingPosts(true);
       try {
-        // Fetch posts
         const resPosts = await fetch('http://localhost:3000/api/posts');
         if (!resPosts.ok) throw new Error('Failed to fetch posts');
         const postsData = await resPosts.json();
 
-        // Fetch comments for all posts concurrently
         const commentsPromises = postsData.map(post =>
           fetch(`http://localhost:3000/api/comments/${post.postId}`).then(res => res.json())
         );
         const commentsData = await Promise.all(commentsPromises);
 
-        // Attach comments to posts
         const postsWithComments = postsData.map((post, i) => ({
           ...post,
           comments: commentsData[i] || [],
         }));
 
-        // Fetch likes for all posts concurrently
         const likesPromises = postsData.map(post =>
           fetch(`http://localhost:3000/api/likes/${post.postId}`).then(res => res.json())
         );
         const likesData = await Promise.all(likesPromises);
 
-        // Build likes map
         const likesMap = {};
         const likedByUserMap = {};
         postsData.forEach((post, i) => {
@@ -85,7 +81,6 @@ function Community({ account }) {
       });
       if (!res.ok) throw new Error('Failed to create post');
       setNewPost('');
-      // Refresh posts after new post
       await refreshPosts();
     } catch (err) {
       setError(err.message);
@@ -113,7 +108,6 @@ function Community({ account }) {
       });
       if (!res.ok) throw new Error('Failed to add comment');
       setNewComment({ ...newComment, [postId]: '' });
-      // Refresh posts after new comment
       await refreshPosts();
     } catch (err) {
       setError(err.message);
@@ -125,7 +119,7 @@ function Community({ account }) {
       setError('You must be signed in to like');
       return;
     }
-    if (likedByCurrentUser[postId]) return; // prevent duplicate likes
+    if (likedByCurrentUser[postId]) return;
     try {
       const res = await fetch('http://localhost:3000/api/likes', {
         method: 'POST',
@@ -142,7 +136,6 @@ function Community({ account }) {
     }
   };
 
-  // Helper to refresh posts/comments/likes from backend
   const refreshPosts = async () => {
     if (!account?.userId) return;
     try {
@@ -184,6 +177,8 @@ function Community({ account }) {
     }
   };
 
+  console.log('Textarea disabled:', !account?.username);
+
   return (
     <div className="container">
       <div className="hero">
@@ -196,8 +191,13 @@ function Community({ account }) {
 
         <form className="post-form" onSubmit={handlePostSubmit}>
           <textarea
+            id="newPost"
+            name="newPost"
             value={newPost}
-            onChange={(e) => setNewPost(e.target.value)}
+            onChange={(e) => {
+              console.log('newPost typing:', e.target.value);
+              setNewPost(e.target.value);
+            }}
             placeholder={account?.username ? "Share your thoughts..." : "Sign in to post..."}
             className="post-input"
             disabled={!account?.username}
@@ -240,6 +240,8 @@ function Community({ account }) {
                   onSubmit={(e) => handleCommentSubmit(post.postId, e)}
                 >
                   <input
+                    id={`comment-${post.postId}`}
+                    name={`comment-${post.postId}`}
                     type="text"
                     value={newComment[post.postId] || ''}
                     onChange={(e) =>

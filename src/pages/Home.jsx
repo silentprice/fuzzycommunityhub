@@ -65,16 +65,18 @@ function Home({ account, setAccount }) {
     xummInstance.on('success', async () => {
       console.log('Xumm authorize success');
       try {
-        const account = await xummInstance.user.account;
+        const walletAddress = await xummInstance.user.account;
 
         // Backend call to get or create username linked to wallet
-        const userData = await fetchOrCreateUser(account);
+        const userData = await fetchOrCreateUser(walletAddress);
         setUsername(userData.username);
 
-        setAccount(account);
+        // IMPORTANT: set account as an object with userId and username
+        setAccount({ userId: walletAddress, username: userData.username });
+
         setQrCode(null);
         setLoading(false);
-        console.log('Signed in:', account, 'username:', userData.username);
+        console.log('Signed in:', walletAddress, 'username:', userData.username);
       } catch (err) {
         console.error('Authorize account error:', err.message, err.stack);
         setError(`Failed to get account or user: ${err.message}`);
@@ -111,12 +113,12 @@ function Home({ account, setAccount }) {
         try {
           const userData = await fetchOrCreateUser(data.response.account);
           setUsername(userData.username);
+          setAccount({ userId: data.response.account, username: userData.username });
         } catch (err) {
           console.error('Failed to fetch/create user after payload:', err);
           setError('Failed to fetch user after login');
         }
 
-        setAccount(data.response.account);
         setQrCode(null);
         setLoading(false);
         console.log('Signed in:', data.response.account);
@@ -276,7 +278,7 @@ function Home({ account, setAccount }) {
           {account && (
             <div style={{ marginTop: '15px' }}>
               <p>
-                <strong>Connected Account:</strong> {account}
+                <strong>Connected Account:</strong> {account.userId}
               </p>
               {username && (
                 <p>
@@ -299,8 +301,8 @@ function Home({ account, setAccount }) {
           )}
         </div>
 
-        {xumm && account && <XRPDisplay account={account} />}
-        {account && username && <Community account={account} username={username} />}
+        {xumm && account && <XRPDisplay account={account.userId} />}
+        {account && username && <Community account={account} />}
         <div className="fuzzy-gif">
           <img src={fuzzyAnimation} alt="Fuzzy Animation" />
         </div>
